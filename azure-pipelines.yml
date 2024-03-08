@@ -53,16 +53,6 @@ stages:
         buildType: 'current'
         artifactName: 'manifests'
         targetPath: '$(Pipeline.Workspace)/manifests'
-    - task: KubernetesManifest@1
-      inputs:
-         action: 'createSecret'
-         connectionType: 'kubernetesServiceConnection'
-         kubernetesServiceConnection: 'aks-sanyi-default'
-         namespace: 'default'
-         secretType: 'dockerRegistry'
-         secretName: '$(acrsecret)'
-         dockerRegistryEndpoint: |
-
 
     - task: KubernetesManifest@1
       inputs:
