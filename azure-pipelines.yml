@@ -30,7 +30,7 @@ stages:
           docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME -f $(Build.SourcesDirectory)/app/Dockerfile
           az acr login --name $ACR_NAME
           docker tag $IMAGE_NAME $ACR_NAME.azurecr.io/$IMAGE_NAME
-          docker pull crsanyi.azurecr.io/sanyiapp:$(TAG)
+          docker pull interiordesign/demo:$(TAG)
           docker push $ACR_NAME.azurecr.io/$IMAGE_NAME
 
     - task: PublishPipelineArtifact@1
