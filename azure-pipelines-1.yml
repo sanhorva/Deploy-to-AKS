@@ -45,7 +45,7 @@ stages:
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'current'
-        artifactName: 'manifest'
+        artifactName: 'manifests'
         targetPath: '$(Pipeline.Workspace)/manifests'
     - task: KubernetesManifest@1
       inputs:
