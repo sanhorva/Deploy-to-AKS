@@ -41,25 +41,27 @@ stages:
   displayName: Deploy to Dev
   dependsOn: Build
   jobs:
-  - job: Deploy
+  - deployment: Deploy
     displayName: Deploy to AKS
+    environment: 'k8sdev.default'
     pool: 
       vmImage: ubuntu-latest
-    steps:
+    strategy:
+     runOnce:
+       deploy: 
+        steps:
 # the deployment stage download the manifests
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'current'
-        artifactName: 'manifests'
-        targetPath: '$(Pipeline.Workspace)/manifests'
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'current'
+            artifactName: 'manifests'
+            targetPath: '$(Pipeline.Workspace)/manifests'
 
-# using the manifest/deployment files to deploy the app 
-    - task: KubernetesManifest@1
-      inputs:
-        action: 'deploy'
-        connectionType: 'kubernetesServiceConnection'
-        kubernetesServiceConnection: 'aks-sanyi'
-        namespace: 'default'
-        manifests: |
-          $(Pipeline.Workspace)/manifests/deployment.yml
-          $(Pipeline.Workspace)/manifests/service.yml
+    # using the manifest/deployment files to deploy the app 
+        - task: KubernetesManifest@1
+          inputs:
+            action: 'deploy'
+            namespace: 'default'
+            manifests: |
+              $(Pipeline.Workspace)/manifests/deployment.yml
+              $(Pipeline.Workspace)/manifests/service.yml
