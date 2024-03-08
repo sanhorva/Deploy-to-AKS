@@ -9,7 +9,8 @@ variables:
   TAG: '$(Build.BuildId)'
 
 stages:
-- stage: Build
+# build the docker image and push it to the repo
+- stage: Build  
   displayName: Build image
   jobs:
   - job: Build
@@ -26,18 +27,19 @@ stages:
         Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
         tags: |
           $(TAG)
+          latest
 
+    # Publish the manifests as artifacts
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Pipeline.Workspace)/s/kubernetes'
         artifact: 'manifests'
         publishLocation: 'pipeline'
 
+# deploy to dev depends on build stage
 - stage: Deploy
   displayName: Deploy to Dev
   dependsOn: Build
-  variables:
-    dockerhubsecret: dhauth
   jobs:
   - job: Deploy
     displayName: Deploy to AKS
@@ -50,6 +52,7 @@ stages:
         artifactName: 'manifests'
         targetPath: '$(Pipeline.Workspace)/manifests'
 
+# the deployment stage download the manifests
     - task: KubernetesManifest@1
       inputs:
         action: 'deploy'
