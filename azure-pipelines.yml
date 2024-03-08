@@ -54,7 +54,7 @@ stages:
       inputs:
         action: 'deploy'
         connectionType: 'kubernetesServiceConnection'
-        kubernetesServiceConnection: 'aks-sanyi-default'
+        kubernetesServiceConnection: 'aks-sanyi'
         namespace: 'sanyi'
         manifests: |
           $(Pipeline.Workspace)/manifests/deployment.yml
