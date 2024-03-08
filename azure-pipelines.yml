@@ -5,11 +5,12 @@ resources:
 - repo: self
 
 variables:
-  imageRepo: 'interiordesign/demo'
-  tag: '$(Build.BuildId)'
+  IMAGE_REPO: interiordesign/demo
+  TAG: '$(Build.BuildId)'
 
 stages:
-- stage: Build
+# build the docker image and push it to the repo
+- stage: Build  
   displayName: Build image
   jobs:
   - job: Build
@@ -21,18 +22,21 @@ stages:
       displayName: Build an image
       inputs:
         containerRegistry: 'dockerhub'
-        repository: '$(imageRepo)'
+        repository: '$(IMAGE_REPO)'
         command: 'buildAndPush'
         Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
         tags: |
-          $(tag)
+          $(TAG)
           latest
+
+    # Publish the manifests as artifacts
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Pipeline.Workspace)/s/kubernetes'
         artifact: 'manifests'
         publishLocation: 'pipeline'
 
+# deploy to dev depends on build stage
 - stage: Deploy
   displayName: Deploy to Dev
   dependsOn: Build
@@ -42,17 +46,20 @@ stages:
     pool: 
       vmImage: ubuntu-latest
     steps:
+# the deployment stage download the manifests
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'current'
         artifactName: 'manifests'
         targetPath: '$(Pipeline.Workspace)/manifests'
+
+# using the manifest/deployment files to deploy the app 
     - task: KubernetesManifest@1
       inputs:
         action: 'deploy'
         connectionType: 'kubernetesServiceConnection'
-        kubernetesServiceConnection: 'aks-sanyi-default'
-        namespace: 'defualt'
+        kubernetesServiceConnection: 'aks-sanyi'
+        namespace: 'default'
         manifests: |
           $(Pipeline.Workspace)/manifests/deployment.yml
           $(Pipeline.Workspace)/manifests/service.yml
