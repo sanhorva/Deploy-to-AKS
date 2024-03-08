@@ -27,7 +27,6 @@ stages:
         Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
         tags: |
           $(TAG)
-          latest
 
     # Publish the manifests as artifacts
     - task: PublishPipelineArtifact@1
