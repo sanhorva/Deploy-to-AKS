@@ -55,8 +55,4 @@ stages:
         namespace: 'defualt'
         manifests: |
           $(Pipeline.Workspace)/manifests/deployment.yml
-<<<<<<< HEAD
           $(Pipeline.Workspace)/manifests/service.yml
-=======
-          $(Pipeline.Workspace)/manifests/service.yml
->>>>>>> b513a86cfa289df62cdc31a3b212a1a7283652b6
