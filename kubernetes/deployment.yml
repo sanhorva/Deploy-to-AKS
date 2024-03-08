@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: sanyi-app 
-          image: interiordesign/demo
+          image: interiordesign/demo/sanyi-app
           ports:
           - containerPort: 80
