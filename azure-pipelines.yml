@@ -77,7 +77,6 @@ stages:
             useLegacyPattern: false
             enableTelemetry: true
 
-
     # using the manifest/deployment files to deploy the app 
         - task: KubernetesManifest@1
           inputs:
