@@ -59,7 +59,7 @@ stages:
             targetPath: '$(Pipeline.Workspace)/manifests'
 
 # tokenize the replica number and replace it with the above given number
-        - task: replacetokens@5
+        - task: qetza.replacetokens.replacetokens-task.replacetokens@3
           displayName: replace tokens
           inputs:
             rootDirectory: '$(Pipeline.Workspace)/manifests/'
