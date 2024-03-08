@@ -39,6 +39,8 @@ stages:
 - stage: Deploy
   displayName: Deploy to Dev
   dependsOn: Build
+  variables:
+    replicaNo: 3
   jobs:
   - deployment: Deploy
     displayName: Deploy to AKS
@@ -55,6 +57,26 @@ stages:
             buildType: 'current'
             artifactName: 'manifests'
             targetPath: '$(Pipeline.Workspace)/manifests'
+
+# tokenize the replica number and replace it with the above given number
+        - task: replacetokens@5
+          displayName: replace tokens
+          inputs:
+            rootDirectory: '$(Pipeline.Workspace)/manifests/'
+            targetFiles: 'deployment.yml'
+            encoding: 'auto'
+            tokenPattern: 'custom'
+            tokenPrefix: '#'
+            tokenSuffix: '#'
+            writeBOM: true
+            actionOnMissing: 'warn'
+            keepToken: false
+            actionOnNoFiles: 'continue'
+            enableTransforms: false
+            enableRecursion: false
+            useLegacyPattern: false
+            enableTelemetry: true
+
 
     # using the manifest/deployment files to deploy the app 
         - task: KubernetesManifest@1
