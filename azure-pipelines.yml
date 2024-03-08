@@ -5,9 +5,7 @@ resources:
 - repo: self
 
 variables:
-  ACR_NAME: 'crsanyi'
-  IMAGE_NAME: 'sanyiapp:$(Build.BuildId)'
-  IMAGE_REPOSITORY: 'crsanyi.azurecr.io/sanyiapp'
+  IMAGE_REPO: interiordesign/demo
   TAG: '$(Build.BuildId)'
 
 stages:
@@ -23,11 +21,11 @@ stages:
       displayName: Build an image
       inputs:
         containerRegistry: 'dockerhub'
-        repository: '$(imageRepo)'
+        repository: '$(IMAGE_REPO)'
         command: 'buildAndPush'
         Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
         tags: |
-          $(tag)
+          $(TAG)
           latest
 
     - task: PublishPipelineArtifact@1
